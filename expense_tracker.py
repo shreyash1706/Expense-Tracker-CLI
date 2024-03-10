@@ -1,6 +1,7 @@
 from datetime import *
 from expense import Expense
 from time import sleep
+import os
 
 
 def main():
@@ -10,6 +11,10 @@ def main():
     #Ask Expense
     expense=get_Expense()
     print(expense,'💵')
+    sleep(1)
+    #Storing Expenses in a CSV file
+    expense_file_path="expense.csv"
+    store_Expense(expense,expense_file_path)
 
 
 def get_Budget():
@@ -57,6 +62,11 @@ def get_Expense():
             print(f"Expense Added for date {date_str}:")
             return Expense(name=name,category=category,amount=amount,date=date_obj)
 
+def store_Expense(expense: Expense,expense_file_path):
+    print("Saving Expense to CSV file")
+    with open(expense_file_path,"a",encoding="utf-8") as file:
+        file.write(f"{expense.name},{expense.category},{expense.amount},{expense.date}")
+    file.close()
 
 
 
