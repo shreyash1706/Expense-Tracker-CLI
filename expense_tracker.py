@@ -16,7 +16,6 @@ def main():
     expense_file_path="expense.csv"
     store_Expense(expense,expense_file_path)
 
-
 def get_Budget():
     print("💰 Do you want to allocate month bugdet")
     ch=''
@@ -36,13 +35,13 @@ def get_Expense():
     #name
     name=input("Enter Expense Name:\n")
     #category
-    exp_categorys=['💼 Work','🏠 Home','🎮 Fun','🍜 Food','💭 Others']
+    exp_categorys=['💼 Work','🏠 Home','🎮 Fun','🍜 Food','🚌 Transport','🏥 HealthCare','🏋️ PersonalCare','💭 Others']
     for i,cat in enumerate(exp_categorys):
         print(f'{i+1}. {cat}')
     while True:
         ch=int(input('Select a number for your category: '))
         if ch in range(len(exp_categorys)+1):    
-            category=exp_categorys[ch-1]
+            category=exp_categorys[ch-1][2:]
             break
         else:
             print(f"Entered Nummber has to be in range [0-{len(exp_categorys)+1}]")
@@ -58,14 +57,13 @@ def get_Expense():
         elif ch=='n':
             #TODO: might fail in certain conditions
             date_str=input("Enter date for this expense(dd-mm-yyyy format)\n")
-            date_obj = datetime.strptime(date_str, '%d-%m-%Y').date()
             print(f"Expense Added for date {date_str}:")
-            return Expense(name=name,category=category,amount=amount,date=date_obj)
+            return Expense(name=name,category=category,amount=amount,date=date_str)
 
 def store_Expense(expense: Expense,expense_file_path):
     print("Saving Expense to CSV file")
     with open(expense_file_path,"a",encoding="utf-8") as file:
-        file.write(f"{expense.name},{expense.category},{expense.amount},{expense.date}")
+        file.write(f"{expense.name},{expense.category},{expense.amount},{expense.date}\n")
     file.close()
 
 
