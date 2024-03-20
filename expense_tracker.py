@@ -12,7 +12,7 @@ def main():
     if is_first_day_of_month() or is_first_time_running():
         budget=get_Budget()
         with open("budget.txt","w") as b:
-            b.write(budget)
+            b.write(f'{budget}')
         b.close()
     sleep(1)
     #Ask Expense
@@ -36,12 +36,15 @@ def main():
     print("Would you like to see the analysis of the expenditure?")
     c=input("y/n")
     if c=='y':
-        df=pd.read_csv(expense_file_path)
+        df=pd.read_csv("example.csv")
         #Analysis of Expense Data
         print("Analysis of Expenditure")
+        sleep(1)
         #Expense for today
         print("Expense for today")
-        x=ExpenseForToday(df)
+        #TODO: change this later
+        x=ExpenseForToday(pd.read_csv("expense.csv"))
+        sleep(2)
         print(f"Total Expense for Today: {x}Rs")
         sleep(1)
         #Distribution by category
@@ -57,11 +60,12 @@ def main():
         sleep(2)
         GraphAnalysis.Expense_Category_Lineplot(df)
         print("Would you] like to see the Expense for the month?")
+        sleep(2)
         print("1. Current Month")
-        print("2. Other")
+        print("2. Other\n")
         ch=input()
         
-        if ch==1:
+        if ch=='1':
             Expense_for_the_month(df)
         else:
             mon=input("Enter the month in (mm/yy) format")
@@ -80,7 +84,6 @@ def get_Budget():
         if ch=='y':
             bugdet=float(input("Enter your budget:\n"))
             print(f"Budget allocated for this month is {bugdet:.2f}Rs")
-            print("remaining day in the month ")
             return bugdet
         elif(ch=='n'):
             return None            
@@ -112,11 +115,17 @@ def get_Expense():
             print("Expense Added for today:")
             expense= Expense(name=name,category=category,amount=amount)
             print(expense,'💵')
-            with open("budget.txt","r") as b:
-                budget=b.read()
-            b.close()
-            if budget!=None:
-                print(f"Amount remaining from budget {budget-amount}Rs")
+            try:
+                with open("budget.txt","r+") as b:
+                    budget=b.read()
+                    if budget!=None:
+                        print(f"Amount remaining from budget {float(budget)-amount}Rs")
+                    b.seek(0)
+                    b.truncate()
+                    b.write(f'{float(budget)-amount}')
+                    
+            except:
+                pass
         elif ch=='n':
             #TODO: might fail in certain conditions
             date_str=input("Enter date for this expense(dd-mm-yyyy format)\n")
@@ -127,6 +136,10 @@ def get_Expense():
 
 def store_Expense(expense: Expense,expense_file_path):
     print("Saving Expense to CSV file")
+    if not os.path.isfile(expense_file_path):
+            with open(expense_file_path,"w",encoding="utf-8") as file:
+                file.write("Name,Category,Amount,Date\n")
+            file.close()
     with open(expense_file_path,"a",encoding="utf-8") as file:
         file.write(f"{expense.name},{expense.category},{expense.amount},{expense.date}\n")
     file.close()
@@ -137,7 +150,7 @@ def is_first_day_of_month():
 
 def is_first_time_running():
     try:
-        pd.read_csv('expenses.csv')
+        pd.read_csv('expense.csv')
         return False
     except FileNotFoundError:
         return True

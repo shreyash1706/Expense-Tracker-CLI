@@ -54,3 +54,4 @@ class GraphAnalysis:
         # for i in range(1,z+1):
         #    print(year_month[year_month.index.get_level_values('month') == i].mean())
 # GraphAnalysis.Expense_Heatmap_ByMonth(df)
+# GraphAnalysis.Expense_Category_Lineplot(df)

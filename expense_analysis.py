@@ -8,7 +8,9 @@ df=pd.read_csv(expense_file_path)
 def ExpenseForToday(df: pd.DataFrame):
     # df['Date']=pd.to_datetime(df['Date'],format='%d-%m-%Y')
     today=datetime.today()
-    df=df.loc[df.Date==str(today)]
+    today=today.strftime('%d-%m-%Y')
+    
+    df=df.loc[df.Date==today]
     print(df)
     return df['Amount'].sum()
     
@@ -35,7 +37,6 @@ def Expense_for_the_month(df: pd.DataFrame,now=date.today()):
 def avg_expense_by_day(df: pd.DataFrame):
     v=df.groupby('Date').Amount.sum()
     print(v.sum()/len(v))
-
 
 
  
